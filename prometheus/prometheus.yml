@@ -1,0 +1,315 @@
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+  - job_name: 'servers'
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    file_sd_configs:
+      - files:
+        - 'targets/servers.yml'
+
+  - job_name: 'hp5500'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.16
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+  - job_name: 'hp2530_1'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.17
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+  - job_name: 'hp2530_2'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.18
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: 'utm_snmp'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.8
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: 'ping'
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+     - files:
+       - 'targets/ping.yml'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-benda:9115
+   
+  - job_name: 'pingtest'
+    scrape_interval: 1s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+     - files:
+       - 'targets/pingtest.yml'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-benda:9115
+
+  - job_name: 'pingfrom91'
+    scrape_interval: 1s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+     - files:
+       - 'targets/pingtest.yml'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.221.91:9115
+
+
+  - job_name: 'http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    file_sd_configs:
+     - files:
+       - 'targets/http.yml'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-benda:9115
+
+
+  - job_name: 'synology1'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.222.15
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [synology] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: 'synology4'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.222.16
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [synology] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: 'synology5'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.222.17
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [synology] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: '1920_221.21'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.21
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: '1920_221.22'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.22
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: '1920_221.19'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.19
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: '1920_221.20'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.20
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: ipmi
+    params:
+      module: [default]
+    scrape_interval: 3m
+    scrape_timeout: 2m
+    metrics_path: /ipmi
+    scheme: http
+    file_sd_configs:
+    - files:
+      - targets/ipmi.yml
+      refresh_interval: 5m
+    relabel_configs:
+    - source_labels: [__address__]
+      separator: ;
+      regex: (.*)
+      target_label: __param_target
+      replacement: ${1}
+      action: replace
+    - source_labels: [__param_target]
+      separator: ;
+      regex: (.*)
+      target_label: instance
+      replacement: ${1}
+      action: replace
+    - separator: ;
+      regex: .*
+      target_label: __address__
+      replacement: ipmi-benda:9290
+      action: replace
+
+  - job_name: 'ups'
+    scrape_interval: 120s
+    scrape_timeout: 120s
+    static_configs:
+    - targets:
+      - 192.168.221.44
+    # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [ups] #which OID's we will be querying in
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 192.168.221.90:9116  # The SNMP exporter's real hostname:port.

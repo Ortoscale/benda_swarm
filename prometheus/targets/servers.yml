@@ -1,0 +1,88 @@
+---
+- targets:
+  - localhost:9100
+  - localhost:9427
+  labels:
+    location: Nazarje
+    host: monitor
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.11:9182
+  - 192.168.221.11:9427
+  labels:
+    location: Nazarje
+    host: benda-srv
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.12:9182
+  labels:
+    location: Nazarje
+    host: veeam-serv
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.51:9182
+  labels:
+    location: Nazarje
+    host: srvbenda-sql
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.53:9182
+  labels:
+    location: Nazarje
+    host: srvbenda-exch
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.61:9182
+  labels:
+    location: Nazarje
+    host: srvbenda-dc1
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.62:9182
+  labels:
+    location: Nazarje
+    host: srvbenda-dc2
+    geohash: u24xkpg
+- targets:
+  - vcenter-benda:9272
+  labels:
+    location: Nazarje
+    host: vcenter
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.35:9100
+  labels:
+    location: Nazarje
+    host: srv-nas3
+    geohash: u24xkpg
+- targets:
+  - 192.168.222.15:9100
+  labels:
+    host: srv-nas1
+- targets:
+  - 192.168.222.16:9100
+  labels:
+    host: srv-nas4
+- targets:
+  - 192.168.222.17:9100
+  labels:
+    host: srv-nas5
+- targets:
+  - 192.168.221.90:9100
+  - 192.168.221.90:9427
+  labels:
+    location: Nazarje
+    host: monitor-serv
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.2:9182
+  labels:
+    location: Nazarje
+    host: sql-serv
+    geohash: u24xkpg
+- targets:
+  - 192.168.221.52:9182
+  labels:
+    location: Nazarje
+    host: srvbenda-app
+    geohash: u24xkpg
